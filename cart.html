@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrinho | DOORPHONES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+      <a href="index.html#inicio" class="brand"><span class="brand-mark">D</span><span>DOOR<span>PHONES</span></span></a>
+      <nav id="menu" class="menu">
+        <a href="index.html#inicio">Início</a>
+        <a href="index.html#sobre">A marca</a>
+        <a href="index.html#produtos">Produtos</a>
+        <a href="index.html#contato">Contato</a>
+      </nav>
+      <a class="nav-button" href="index.html#produtos">Conheça nossos produtos</a>
+      <a href="cart.html" class="cart-icon" aria-label="Carrinho">🛒<span class="cart-count">0</span></a>
+      <button class="menu-toggle" aria-label="Abrir menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <span class="section-tag">SEU CARRINHO</span>
+        <h1>Confira seus <span>produtos.</span></h1>
+      </div>
+    </section>
+
+    <section class="section cart-page">
+      <div class="container">
+        <div id="cart-empty" class="cart-empty" style="display:none">
+          <p>Seu carrinho está vazio.</p>
+          <a href="index.html#produtos">Explorar produtos →</a>
+        </div>
+
+        <div id="cart-items" class="cart-list"></div>
+
+        <div id="cart-summary" class="cart-summary" style="display:none">
+          <span>Total: <strong id="cart-total">R$ 0,00</strong></span>
+          <a class="button primary" href="checkout.html">Ir para pagamento →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <a href="index.html#inicio" class="brand"><span class="brand-mark">D</span><span>DOOR<span>PHONES</span></span></a>
+      <p>Inovação, conexão sempre com você.</p>
+      <small>Projeto acadêmico — empresa fictícia</small>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script src="cart.js"></script>
+  <script src="script.js"></script>
+  <script>
+    function renderCart() {
+      const cart = getCart();
+      const container = document.getElementById('cart-items');
+      const emptyMsg = document.getElementById('cart-empty');
+      const summary = document.getElementById('cart-summary');
+
+      if (cart.length === 0) {
+        container.innerHTML = '';
+        emptyMsg.style.display = 'block';
+        summary.style.display = 'none';
+        return;
+      }
+
+      emptyMsg.style.display = 'none';
+      summary.style.display = 'flex';
+
+      container.innerHTML = cart.map(item => `
+        <div class="cart-item">
+          <div class="cart-item-info">
+            <span class="cart-item-name">${item.name}</span>
+            <span class="cart-item-price">${formatBRL(item.price)} / un.</span>
+          </div>
+          <div class="cart-item-qty">
+            <button onclick="changeQty('${item.id}', -1)" aria-label="Diminuir">−</button>
+            <span>${item.qty}</span>
+            <button onclick="changeQty('${item.id}', 1)" aria-label="Aumentar">+</button>
+          </div>
+          <div class="cart-item-total">${formatBRL(item.price * item.qty)}</div>
+          <button class="cart-item-remove" onclick="removeFromCart('${item.id}')" aria-label="Remover">✕</button>
+        </div>
+      `).join('');
+
+      document.getElementById('cart-total').textContent = formatBRL(cartTotal());
+    }
+
+    document.addEventListener('DOMContentLoaded', renderCart);
+  </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | DOORPHONES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+      <a href="index.html#inicio" class="brand"><span class="brand-mark">D</span><span>DOOR<span>PHONES</span></span></a>
+      <nav id="menu" class="menu">
+        <a href="index.html#inicio">Início</a>
+        <a href="index.html#sobre">A marca</a>
+        <a href="index.html#produtos">Produtos</a>
+        <a href="index.html#contato">Contato</a>
+      </nav>
+      <a class="nav-button" href="index.html#produtos">Conheça nossos produtos</a>
+      <a href="cart.html" class="cart-icon" aria-label="Carrinho">🛒<span class="cart-count">0</span></a>
+      <button class="menu-toggle" aria-label="Abrir menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <span class="section-tag">FINALIZAR COMPRA</span>
+        <h1>Quase lá.<br><span>Só falta confirmar.</span></h1>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:20px">
+      <div class="container">
+
+        <div id="checkout-form-view" class="checkout-grid">
+          <form id="checkout-form" class="checkout-form">
+            <span class="section-tag" style="margin-bottom:4px">DADOS DE ENTREGA</span>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nome">Nome completo</label>
+                <input id="nome" type="text" required>
+              </div>
+              <div class="form-group">
+                <label for="email">E-mail</label>
+                <input id="email" type="email" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cep">CEP</label>
+                <input id="cep" type="text" required>
+              </div>
+              <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input id="telefone" type="tel" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="endereco">Endereço</label>
+              <input id="endereco" type="text" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cidade">Cidade</label>
+                <input id="cidade" type="text" required>
+              </div>
+              <div class="form-group">
+                <label for="estado">Estado</label>
+                <input id="estado" type="text" maxlength="2" placeholder="MG" required>
+              </div>
+            </div>
+
+            <span class="section-tag" style="margin:14px 0 4px">FORMA DE PAGAMENTO</span>
+
+            <div class="payment-options">
+              <label class="payment-option"><input type="radio" name="pagamento" value="pix" checked> Pix</label>
+              <label class="payment-option"><input type="radio" name="pagamento" value="cartao"> Cartão de crédito</label>
+              <label class="payment-option"><input type="radio" name="pagamento" value="boleto"> Boleto</label>
+            </div>
+
+            <button type="submit" class="button primary" style="margin-top:10px">Finalizar pedido →</button>
+          </form>
+
+          <aside class="checkout-summary">
+            <span class="section-tag">RESUMO DO PEDIDO</span>
+            <div id="checkout-items" style="margin-top:16px"></div>
+            <div class="checkout-total-row">
+              <span>Total</span>
+              <strong id="checkout-total">R$ 0,00</strong>
+            </div>
+          </aside>
+        </div>
+
+        <div id="checkout-success" class="checkout-success" style="display:none">
+          <span class="section-tag">PEDIDO CONFIRMADO</span>
+          <h2>Obrigado pela sua compra! ✦</h2>
+          <p>Este é um projeto acadêmico — nenhum pagamento real foi processado.</p>
+          <a class="button primary" href="index.html#inicio" style="margin-top:20px;display:inline-block">Voltar ao início</a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <a href="index.html#inicio" class="brand"><span class="brand-mark">D</span><span>DOOR<span>PHONES</span></span></a>
+      <p>Inovação, conexão sempre com você.</p>
+      <small>Projeto acadêmico — empresa fictícia</small>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script src="cart.js"></script>
+  <script src="script.js"></script>
+  <script>
+    function renderCheckoutSummary() {
+      const cart = getCart();
+      const list = document.getElementById('checkout-items');
+      if (!list) return;
+
+      if (cart.length === 0) {
+        window.location.href = 'cart.html';
+        return;
+      }
+
+      list.innerHTML = cart.map(item => `
+        <div class="checkout-line">
+          <span>${item.qty}x ${item.name}</span>
+          <span>${formatBRL(item.price * item.qty)}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('checkout-total').textContent = formatBRL(cartTotal());
+    }
+
+    document.addEventListener('DOMContentLoaded', renderCheckoutSummary);
+
+    document.getElementById('checkout-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('checkout-form-view').style.display = 'none';
+      document.getElementById('checkout-success').style.display = 'block';
+      localStorage.removeItem(CART_KEY);
+      updateCartCount();
+    });
+  </script>
+</body>
+</html>
